@@ -9,7 +9,7 @@ OUTPUT_OBJECT =
     "nil"     => nil,
     "integer" => 1864,
     "double"  => 23.42,
-    "time"    => 10.0,
+    "time"    => "10s",
     "array"   => [
       "foo",
       true,
@@ -17,7 +17,7 @@ OUTPUT_OBJECT =
       nil,
       1864,
       23.42,
-      10.0,
+      "10s",
     ],
     "hash" => {
       "foo" => "bar",
