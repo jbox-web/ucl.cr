@@ -4,6 +4,6 @@ version: 0.1.0
 authors:
   - Nicolas Rodriguez <nicoladmin@free.fr>
 
-crystal: 0.35.0
+crystal: 0.35.1
 
 license: MIT
