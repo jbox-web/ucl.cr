@@ -1,9 +1,10 @@
 name: ucl
-version: 0.1.0
 
-authors:
-  - Nicolas Rodriguez <nicoladmin@free.fr>
+version: 0.1.0
 
 crystal: 0.35.1
 
 license: MIT
+
+authors:
+  - Nicolas Rodriguez <nico@nicoladmin.fr>
