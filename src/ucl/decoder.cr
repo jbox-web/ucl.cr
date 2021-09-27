@@ -61,7 +61,7 @@ module UCL
         yield ptr
       end
     ensure
-      UCL::LibUCL.object_iterate_free(iterator)
+      UCL::LibUCL.object_iterate_free(iterator) if iterator
     end
   end
 end
