@@ -1,5 +1,5 @@
 ---
-name: UCL CI
+name: CI
 
 on:
   - push
@@ -7,13 +7,21 @@ on:
 
 jobs:
   build:
-
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
 
     container:
       image: crystallang/crystal
 
     steps:
-    - uses: actions/checkout@v2
-    - name: Run tests
-      run: make spec
+      - uses: actions/checkout@v2
+        with:
+          submodules: recursive
+
+      - name: Install dev packages
+        run: apt-get update && apt-get install -y build-essential automake autoconf libtool
+
+      - name: Build vendored libucl
+        run: make libucl
+
+      - name: Run tests
+        run: make spec

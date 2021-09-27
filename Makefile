@@ -1,3 +1,16 @@
+# Ensure that every command in this Makefile
+# will run with bash instead of the default sh
+SHELL := /usr/bin/env bash
+
+# Use sudo if current user is not root
+UID := $(shell id -u)
+
+ifneq ($(UID), 0)
+	sudo = sudo
+else
+	sudo =
+endif
+
 ################
 # Public tasks #
 ################
@@ -22,7 +35,17 @@ clean: ## Cleanup environment
 	rm -rf lib/
 	$(MAKE) deps
 
-.PHONY: all ucl ucl-release deps spec clean
+libucl: ## Build vendored libucl lib
+	pushd ext/libucl && \
+	./autogen.sh && \
+	./configure && \
+	make && \
+	$(sudo) cp -v src/.libs/libucl.so   /usr/local/lib/ && \
+	$(sudo) cp -v src/.libs/libucl.so.5 /usr/local/lib/ && \
+	$(sudo) ldconfig && \
+	popd
+
+.PHONY: all ucl ucl-release deps spec clean libucl
 
 #################
 # Private tasks #
