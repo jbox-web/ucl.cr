@@ -7,8 +7,10 @@ module UCL
 
     @parser : UCL::LibUCL::Parser*
 
-    def initialize
-      @parser = UCL::LibUCL.new(UCL::LibUCL::ParserFlags::UCL_PARSER_NO_TIME | UCL::LibUCL::ParserFlags::UCL_PARSER_NO_IMPLICIT_ARRAYS)
+    DEFAULT_FLAGS = UCL::LibUCL::ParserFlags::UCL_PARSER_NO_TIME | UCL::LibUCL::ParserFlags::UCL_PARSER_NO_IMPLICIT_ARRAYS
+
+    def initialize(flags = DEFAULT_FLAGS)
+      @parser = UCL::LibUCL.new(flags)
     end
 
     def parse(string)
