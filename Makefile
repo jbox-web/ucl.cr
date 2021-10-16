@@ -18,6 +18,11 @@ endif
 # This is the default task
 all: help
 
+setup: ## Setup local environment
+	asdf plugin add crystal || true
+	asdf install
+	asdf current
+
 ucl: ## Compile to development binary
 	crystal build --threads 4 -o bin/ucl src/ucl.cr
 
@@ -45,7 +50,7 @@ libucl: ## Build vendored libucl lib
 	$(sudo) ldconfig && \
 	popd
 
-.PHONY: all ucl ucl-release deps spec clean libucl
+.PHONY: all setup ucl ucl-release deps spec clean libucl
 
 #################
 # Private tasks #
