@@ -33,7 +33,7 @@ deps: ## Install dependencies
 	shards install
 
 spec: ## Run Crystal spec
-	crystal spec
+	export LD_LIBRARY_PATH=/usr/local/lib && crystal spec
 
 clean: ## Cleanup environment
 	rm -rf bin/*

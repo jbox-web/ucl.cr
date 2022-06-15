@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-20.04
 
     container:
-      image: crystallang/crystal:1.2.0
+      image: crystallang/crystal:1.4.1
 
     steps:
       - uses: actions/checkout@v2
