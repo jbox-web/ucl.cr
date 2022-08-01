@@ -46,7 +46,6 @@ describe UCL::Encoder do
   describe ".encode" do
     context "when emit_type is config" do
       it "should encode UCL conf" do
-        encoder = UCL::Encoder.new
         output_ucl_conf = File.read("spec/fixtures/output_ucl.conf")
         UCL::Encoder.encode(INPUT_OBJECT).should eq(output_ucl_conf)
       end
@@ -54,7 +53,6 @@ describe UCL::Encoder do
 
     context "when emit_type is yaml" do
       it "should encode UCL conf" do
-        encoder = UCL::Encoder.new
         output_ucl_conf = File.read("spec/fixtures/output_ucl.yml")
         UCL::Encoder.encode(INPUT_OBJECT, "yaml").should eq(output_ucl_conf.chomp)
       end
@@ -62,7 +60,6 @@ describe UCL::Encoder do
 
     context "when emit_type is json" do
       it "should encode UCL conf" do
-        encoder = UCL::Encoder.new
         output_ucl_conf = File.read("spec/fixtures/output_ucl.json")
         UCL::Encoder.encode(INPUT_OBJECT, "json").should eq(output_ucl_conf.chomp)
       end
@@ -70,7 +67,6 @@ describe UCL::Encoder do
 
     context "when emit_type is json_compact" do
       it "should encode UCL conf" do
-        encoder = UCL::Encoder.new
         output_ucl_conf = File.read("spec/fixtures/output_ucl.json.min")
         UCL::Encoder.encode(INPUT_OBJECT, "json_compact").should eq(output_ucl_conf.chomp)
       end
@@ -80,7 +76,7 @@ describe UCL::Encoder do
       it "raises an error" do
         input_object = {} of Foo => String
         input_object[Foo.new] = "foo"
-        encoder = UCL::Encoder.new
+
         expect_raises(UCL::Error::TypeError) do
           UCL::Encoder.encode(input_object)
         end
@@ -91,7 +87,7 @@ describe UCL::Encoder do
       it "raises an error" do
         input_object = {} of String => Foo
         input_object["foo"] = Foo.new
-        encoder = UCL::Encoder.new
+
         expect_raises(UCL::Error::TypeError) do
           UCL::Encoder.encode(input_object)
         end
