@@ -52,7 +52,7 @@ module UCL
       end
     end
 
-    private def self.iter_ucl_object(object)
+    private def self.iter_ucl_object(object, &)
       iterator = UCL::LibUCL.object_iterate_new(object)
       loop do
         ptr = UCL::LibUCL.object_iterate_safe(iterator, true)
