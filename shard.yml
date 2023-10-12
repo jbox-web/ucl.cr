@@ -2,7 +2,7 @@ name: ucl
 
 version: 0.1.0
 
-crystal: 1.8.0
+crystal: 1.10.0
 
 license: MIT
 
@@ -12,4 +12,4 @@ authors:
 development_dependencies:
   ameba:
     github: crystal-ameba/ameba
-    version: ~> 1.4.0
+    version: ~> 1.5.0
