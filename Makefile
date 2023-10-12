@@ -50,7 +50,10 @@ libucl: ## Build vendored libucl lib
 	$(sudo) ldconfig && \
 	popd
 
-.PHONY: all setup ucl ucl-release deps spec clean libucl
+ameba: ## Run static code analysis
+	bin/ameba
+
+.PHONY: all setup ucl ucl-release deps spec clean libucl ameba
 
 #################
 # Private tasks #
