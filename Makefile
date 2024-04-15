@@ -46,7 +46,7 @@ libucl: ## Build vendored libucl lib
 	./configure && \
 	make && \
 	$(sudo) cp -v src/.libs/libucl.so   /usr/local/lib/ && \
-	$(sudo) cp -v src/.libs/libucl.so.5 /usr/local/lib/ && \
+	$(sudo) cp -v src/.libs/libucl.so.8 /usr/local/lib/ && \
 	$(sudo) ldconfig && \
 	popd
 
