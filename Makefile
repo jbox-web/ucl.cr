@@ -13,11 +13,11 @@ endif
 
 ifeq ($(shell uname -s),Darwin)
 	LIB_NAME = "libucl.dylib"
-	LIB_NAME_VERSION = "libucl.8.dylib"
+	LIB_NAME_VERSION = "libucl.7.dylib"
 	LIB_RELOAD = true
 else
 	LIB_NAME = "libucl.so"
-	LIB_NAME_VERSION = "libucl.so.8"
+	LIB_NAME_VERSION = "libucl.so.7"
 	LIB_RELOAD = $(sudo) ldconfig
 endif
 
