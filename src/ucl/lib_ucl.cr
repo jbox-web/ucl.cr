@@ -51,7 +51,7 @@ module UCL
     end
 
     union Value
-      iv : Int64
+      iv : LibC::LongLong
       sv : LibC::Char*
       dv : Int64
       av : Void*
