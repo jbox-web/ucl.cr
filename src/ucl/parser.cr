@@ -1,13 +1,13 @@
 module UCL
   class Parser
-    def self.parse(string : String)
-      parser = new
+    DEFAULT_FLAGS = UCL::LibUCL::ParserFlags::UCL_PARSER_NO_TIME | UCL::LibUCL::ParserFlags::UCL_PARSER_NO_IMPLICIT_ARRAYS
+
+    def self.parse(string : String, flags = DEFAULT_FLAGS)
+      parser = new(flags)
       parser.parse(string)
     end
 
     @parser : UCL::LibUCL::Parser*
-
-    DEFAULT_FLAGS = UCL::LibUCL::ParserFlags::UCL_PARSER_NO_TIME | UCL::LibUCL::ParserFlags::UCL_PARSER_NO_IMPLICIT_ARRAYS
 
     def initialize(flags = DEFAULT_FLAGS)
       @parser = UCL::LibUCL.new(flags)
