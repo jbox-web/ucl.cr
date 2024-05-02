@@ -73,6 +73,12 @@ module UCL
       trash_stack : StaticArray(LibC::UChar*, 2)
     end
 
+    struct SchemaError
+      code : SchemaErrorCode
+      msg : StaticArray(LibC::Char, 128)
+      obj : UclObject*
+    end
+
     alias Iterator = Void*
 
     fun new = ucl_parser_new(flags : LibC::Int) : Parser*
@@ -91,6 +97,7 @@ module UCL
     fun object_iterate_free = ucl_object_iterate_free(iter : Iterator) : Void
 
     fun object_emit = ucl_object_emit(object : UclObject*, emit_type : Emitters) : LibC::Char*
+    fun object_validate = ucl_object_validate(schema : UclObject*, object : UclObject*, error : SchemaError*) : Bool
     fun array_append = ucl_array_append(UclObject*, UclObject*) : Bool
     fun object_replace_key = ucl_object_replace_key(top : UclObject*, elt : UclObject*, key : LibC::Char*, keylen : LibC::SizeT, copy_key : Bool) : Bool
 
