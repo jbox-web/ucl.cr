@@ -25,7 +25,7 @@ module UCL
     private def self.convert_ucl_object(object)
       case object.value.type
       when UCL::LibUCL::Types::UCL_OBJECT.value
-        hash = Value.new
+        hash = UCL::Value.new
         iterate_ucl_object(object) do |child|
           key = String.new UCL::LibUCL.object_key(child)
           hash[key] = from_ucl_object(child)
