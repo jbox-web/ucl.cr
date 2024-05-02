@@ -70,5 +70,12 @@ describe UCL::Decoder do
       input_ucl_conf = File.read("spec/fixtures/input_ucl.conf")
       UCL::Decoder.decode(input_ucl_conf).should eq(OUTPUT_OBJECT)
     end
+
+    it "should raise error on invalid UCL conf" do
+      input_ucl_conf = File.read("spec/fixtures/input_ucl_invalid.conf")
+      expect_raises(UCL::Error::DecoderError) do
+        UCL::Decoder.decode(input_ucl_conf)
+      end
+    end
   end
 end
