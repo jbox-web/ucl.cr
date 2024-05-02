@@ -88,7 +88,7 @@ module UCL
     fun object_iterate_safe = ucl_object_iterate_safe(object : Iterator, flags : Bool) : UclObject*
     fun object_iterate_free = ucl_object_iterate_free(iter : Iterator) : Void
 
-    fun object_emit = ucl_object_emit(object : UclObject*, emit_type : Int64) : LibC::Char*
+    fun object_emit = ucl_object_emit(object : UclObject*, emit_type : Emitters) : LibC::Char*
     fun array_append = ucl_array_append(UclObject*, UclObject*) : Bool
     fun object_replace_key = ucl_object_replace_key(top : UclObject*, elt : UclObject*, key : LibC::Char*, keylen : LibC::SizeT, copy_key : Bool) : Bool
 
