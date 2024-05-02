@@ -25,12 +25,6 @@ module UCL
 
     private def self.to_ucl_object(object)
       case object
-      when Array
-        array = UCL::LibUCL.object_typed_new(UCL::LibUCL::Types::UCL_ARRAY)
-        object.each do |item|
-          UCL::LibUCL.array_append(array, to_ucl_object(item))
-        end
-        array
       when Hash
         hash = UCL::LibUCL.object_typed_new(UCL::LibUCL::Types::UCL_OBJECT)
         object.each do |key, value|
@@ -41,6 +35,12 @@ module UCL
           end
         end
         hash
+      when Array
+        array = UCL::LibUCL.object_typed_new(UCL::LibUCL::Types::UCL_ARRAY)
+        object.each do |item|
+          UCL::LibUCL.array_append(array, to_ucl_object(item))
+        end
+        array
       when String
         UCL::LibUCL.object_from_string(object)
       when Bool
@@ -49,10 +49,10 @@ module UCL
         UCL::LibUCL.object_from_int(object)
       when Float
         UCL::LibUCL.object_from_double(object)
-      when Nil
-        UCL::LibUCL.object_typed_new(UCL::LibUCL::Types::UCL_NULL)
       when Time::Span
         UCL::LibUCL.object_from_double(object.to_i.to_f)
+      when Nil
+        UCL::LibUCL.object_typed_new(UCL::LibUCL::Types::UCL_NULL)
       else
         raise UCL::Error::TypeError.new("#{object.class.name}##{object.inspect} is not UCL serializable")
       end

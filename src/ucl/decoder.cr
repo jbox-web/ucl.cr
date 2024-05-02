@@ -37,14 +37,16 @@ module UCL
           array << from_ucl_object(child)
         end
         array
-      when UCL::LibUCL::Types::UCL_INT.value
-        UCL::LibUCL.object_to_int(object)
-      when UCL::LibUCL::Types::UCL_FLOAT.value, UCL::LibUCL::Types::UCL_TIME.value
-        UCL::LibUCL.object_to_double(object)
       when UCL::LibUCL::Types::UCL_STRING.value
         String.new UCL::LibUCL.object_to_string(object)
       when UCL::LibUCL::Types::UCL_BOOLEAN.value
         UCL::LibUCL.object_to_boolean(object)
+      when UCL::LibUCL::Types::UCL_INT.value
+        UCL::LibUCL.object_to_int(object)
+      when UCL::LibUCL::Types::UCL_FLOAT.value
+        UCL::LibUCL.object_to_double(object)
+      when UCL::LibUCL::Types::UCL_TIME.value
+        UCL::LibUCL.object_to_double(object)
       when UCL::LibUCL::Types::UCL_NULL.value
         nil
       else
