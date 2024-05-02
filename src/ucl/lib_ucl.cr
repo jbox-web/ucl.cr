@@ -71,6 +71,8 @@ module UCL
       type : UInt16
     end
 
+    alias Iterator = Void*
+
     fun new = ucl_parser_new(flags : LibC::Int) : Parser*
     fun add_string = ucl_parser_add_string(parser : Parser*, data : LibC::Char*, len : LibC::SizeT) : Bool
     fun get_error = ucl_parser_get_error(parser : Parser*) : LibC::Char*
@@ -82,9 +84,9 @@ module UCL
     fun object_to_string = ucl_object_tostring(object : UclObject*) : LibC::Char*
     fun object_to_boolean = ucl_object_toboolean(object : UclObject*) : Bool
 
-    fun object_iterate_new = ucl_object_iterate_new(object : UclObject*) : Int32*
-    fun object_iterate_safe = ucl_object_iterate_safe(object : Int32*, flags : Bool) : UclObject*
-    fun object_iterate_free = ucl_object_iterate_free(iter : Int32*) : Void
+    fun object_iterate_new = ucl_object_iterate_new(object : UclObject*) : Iterator
+    fun object_iterate_safe = ucl_object_iterate_safe(object : Iterator, flags : Bool) : UclObject*
+    fun object_iterate_free = ucl_object_iterate_free(iter : Iterator) : Void
 
     fun object_emit = ucl_object_emit(object : UclObject*, emit_type : Int64) : LibC::Char*
     fun array_append = ucl_array_append(UclObject*, UclObject*) : Bool
