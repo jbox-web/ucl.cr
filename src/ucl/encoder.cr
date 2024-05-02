@@ -15,8 +15,12 @@ module UCL
       emitter = EMITTERS[emit_type]?
       raise UCL::Error::EncoderError.new("Unknown emitter format: #{emit_type}") if emitter.nil?
 
+      String.new(build_ucl_object(object, emitter))
+    end
+
+    private def self.build_ucl_object(object, emitter)
       ucl_object = to_ucl_object(object)
-      String.new UCL::LibUCL.object_emit(ucl_object, emitter)
+      UCL::LibUCL.object_emit(ucl_object, emitter)
     end
 
     private def self.to_ucl_object(object)
