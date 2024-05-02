@@ -70,6 +70,7 @@ module UCL
       ref : LibC::UInt
       flags : LibC::UShort
       type : LibC::UShort
+      trash_stack : StaticArray(LibC::UChar*, 2)
     end
 
     alias Iterator = Void*
