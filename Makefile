@@ -67,7 +67,12 @@ libucl-install: ## Install vendored libucl lib
 ameba: ## Run static code analysis
 	bin/ameba
 
-.PHONY: all setup ucl ucl-release deps spec clean libucl ameba
+doc: ## Generate ucl.cr documentation
+	rm -rf docs
+	crystal doc
+	open docs/index.html
+
+.PHONY: all setup ucl ucl-release deps spec clean libucl libucl-build libucl-install ameba doc
 
 #################
 # Private tasks #
