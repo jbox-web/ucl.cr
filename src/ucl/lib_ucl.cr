@@ -53,7 +53,7 @@ module UCL
     union Value
       iv : LibC::LongLong
       sv : LibC::Char*
-      dv : Int64
+      dv : LibC::Double
       av : Void*
       ov : Void*
       ud : Void*
