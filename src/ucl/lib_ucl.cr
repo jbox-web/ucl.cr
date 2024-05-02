@@ -47,6 +47,7 @@ module UCL
     end
 
     struct Parser
+      # Error: empty structs are disallowed
       iv : Int64
     end
 
