@@ -11,6 +11,16 @@ else
 	sudo =
 endif
 
+ifeq ($(shell uname -s),Darwin)
+	LIB_NAME = "libucl.dylib"
+	LIB_NAME_VERSION = "libucl.8.dylib"
+	LIB_RELOAD = true
+else
+	LIB_NAME = "libucl.so"
+	LIB_NAME_VERSION = "libucl.so.8"
+	LIB_RELOAD = $(sudo) ldconfig
+endif
+
 ################
 # Public tasks #
 ################
@@ -40,15 +50,19 @@ clean: ## Cleanup environment
 	rm -rf lib/
 	$(MAKE) deps
 
-libucl: ## Build vendored libucl lib
+libucl: libucl-build libucl-install  ## Build and install vendored libucl lib
+
+libucl-build: ## Build vendored libucl lib
 	pushd ext/libucl && \
 	./autogen.sh && \
 	./configure && \
 	make && \
-	$(sudo) cp -v src/.libs/libucl.so   /usr/local/lib/ && \
-	$(sudo) cp -v src/.libs/libucl.so.8 /usr/local/lib/ && \
-	$(sudo) ldconfig && \
 	popd
+
+libucl-install: ## Install vendored libucl lib
+	$(sudo) cp -v ext/libucl/src/.libs/$(LIB_NAME_VERSION) /usr/local/lib/ && \
+	$(sudo) ln -nfs /usr/local/lib/$(LIB_NAME_VERSION) /usr/local/lib/$(LIB_NAME) && \
+	$(LIB_RELOAD)
 
 ameba: ## Run static code analysis
 	bin/ameba
