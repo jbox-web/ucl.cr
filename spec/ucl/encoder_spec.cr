@@ -72,6 +72,14 @@ describe UCL::Encoder do
       end
     end
 
+    context "when emit_type is unknown" do
+      it "should raise error" do
+        expect_raises(UCL::Error::EncoderError) do
+          UCL::Encoder.encode(INPUT_OBJECT, "foo")
+        end
+      end
+    end
+
     context "when key object is not serializable" do
       it "raises an error" do
         input_object = {} of Foo => String

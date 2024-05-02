@@ -4,6 +4,8 @@ module UCL
 
     class DecoderError < BaseError; end
 
+    class EncoderError < BaseError; end
+
     class ConversionError < BaseError; end
 
     class TypeError < BaseError; end
