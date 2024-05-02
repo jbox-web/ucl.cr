@@ -71,7 +71,7 @@ module UCL
       type : UInt16
     end
 
-    fun new = ucl_parser_new(flags : Int64) : Parser*
+    fun new = ucl_parser_new(flags : LibC::Int) : Parser*
     fun add_string = ucl_parser_add_string(parser : Parser*, data : LibC::Char*, len : LibC::SizeT) : Bool
     fun get_error = ucl_parser_get_error(parser : Parser*) : LibC::Char*
     fun get_object = ucl_parser_get_object(parser : Parser*) : UclObject*
