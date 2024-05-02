@@ -1,6 +1,6 @@
 module UCL
   class Parser
-    def self.parse(string)
+    def self.parse(string : String)
       parser = new
       parser.parse(string)
     end
@@ -13,7 +13,7 @@ module UCL
       @parser = UCL::LibUCL.new(flags)
     end
 
-    def parse(string)
+    def parse(string : String)
       load_string(string)
       check_error
       load_result

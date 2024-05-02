@@ -11,7 +11,7 @@ module UCL
 
     DEFAULT_EMITTER = "config"
 
-    def self.encode(object, emit_type = DEFAULT_EMITTER)
+    def self.encode(object, emit_type = DEFAULT_EMITTER) : String
       emitter = EMITTERS[emit_type]?
       raise UCL::Error::EncoderError.new("Unknown emitter format: #{emit_type}") if emitter.nil?
 

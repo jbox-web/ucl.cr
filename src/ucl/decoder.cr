@@ -1,6 +1,6 @@
 module UCL
   class Decoder
-    def self.decode(string)
+    def self.decode(string : String) : UCL::Value::Type
       object = UCL::Parser.parse(string)
       from_ucl_object(object)
     end
