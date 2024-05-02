@@ -64,11 +64,11 @@ module UCL
       key : LibC::Char*
       next : UclObject*
       prev : UclObject*
-      keylen : UInt32
-      len : UInt32
-      ref : UInt32
-      flags : UInt16
-      type : UInt16
+      keylen : LibC::UInt
+      len : LibC::UInt
+      ref : LibC::UInt
+      flags : LibC::UShort
+      type : LibC::UShort
     end
 
     alias Iterator = Void*
