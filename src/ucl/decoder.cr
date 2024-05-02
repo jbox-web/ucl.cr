@@ -2,11 +2,11 @@ module UCL
   class Decoder
     def self.decode(string)
       object = UCL::Parser.parse(string)
-      convert_ucl_object(object)
+      from_ucl_object(object)
     end
 
-    private def self.convert_ucl_object(object)
-      result = convert_ucl_object_direct(object)
+    private def self.from_ucl_object(object)
+      result = convert_ucl_object(object)
 
       if !object.value.next.null? && object.value.type != UCL::LibUCL::Types::UCL_OBJECT.value
         result = [result] of UCL::Value::Type
@@ -15,26 +15,26 @@ module UCL
           object = object.value.next
           break if object.null?
 
-          result << convert_ucl_object_direct(object)
+          result << convert_ucl_object(object)
         end
       end
 
       result
     end
 
-    private def self.convert_ucl_object_direct(object)
+    private def self.convert_ucl_object(object)
       case object.value.type
       when UCL::LibUCL::Types::UCL_OBJECT.value
         hash = Value.new
         iter_ucl_object(object) do |child|
           key = String.new UCL::LibUCL.object_key(child)
-          hash[key] = convert_ucl_object(child)
+          hash[key] = from_ucl_object(child)
         end
         hash.to_h
       when UCL::LibUCL::Types::UCL_ARRAY.value
         array = [] of UCL::Value::Type
         iter_ucl_object(object) do |child|
-          array << convert_ucl_object(child)
+          array << from_ucl_object(child)
         end
         array
       when UCL::LibUCL::Types::UCL_INT.value
