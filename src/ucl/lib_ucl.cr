@@ -54,9 +54,9 @@ module UCL
       iv : Int64
       sv : LibC::Char*
       dv : Int64
-      av : Pointer(Int32)
-      ov : Pointer(Int32)
-      ud : Pointer(Int32)
+      av : Int32*
+      ov : Int32*
+      ud : Int32*
     end
 
     struct UclObject
@@ -82,9 +82,9 @@ module UCL
     fun object_to_string = ucl_object_tostring(object : UclObject*) : LibC::Char*
     fun object_to_boolean = ucl_object_toboolean(object : UclObject*) : Bool
 
-    fun object_iterate_new = ucl_object_iterate_new(object : UclObject*) : Pointer(Int32)
-    fun object_iterate_safe = ucl_object_iterate_safe(object : Pointer(Int32), flags : Bool) : UclObject*
-    fun object_iterate_free = ucl_object_iterate_free(iter : Pointer(Int32)) : Void
+    fun object_iterate_new = ucl_object_iterate_new(object : UclObject*) : Int32*
+    fun object_iterate_safe = ucl_object_iterate_safe(object : Int32*, flags : Bool) : UclObject*
+    fun object_iterate_free = ucl_object_iterate_free(iter : Int32*) : Void
 
     fun object_emit = ucl_object_emit(object : UclObject*, emit_type : Int64) : LibC::Char*
     fun array_append = ucl_array_append(UclObject*, UclObject*) : Bool
