@@ -54,9 +54,9 @@ module UCL
       iv : Int64
       sv : LibC::Char*
       dv : Int64
-      av : Int32*
-      ov : Int32*
-      ud : Int32*
+      av : Void*
+      ov : Void*
+      ud : Void*
     end
 
     struct UclObject
