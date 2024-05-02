@@ -72,7 +72,7 @@ module UCL
     end
 
     fun new = ucl_parser_new(flags : Int64) : Parser*
-    fun add_string = ucl_parser_add_string(parser : Parser*, data : LibC::Char*, len : Int64) : Bool
+    fun add_string = ucl_parser_add_string(parser : Parser*, data : LibC::Char*, len : LibC::SizeT) : Bool
     fun get_error = ucl_parser_get_error(parser : Parser*) : LibC::Char*
     fun get_object = ucl_parser_get_object(parser : Parser*) : UclObject*
 
@@ -88,7 +88,7 @@ module UCL
 
     fun object_emit = ucl_object_emit(object : UclObject*, emit_type : Int64) : LibC::Char*
     fun array_append = ucl_array_append(UclObject*, UclObject*) : Bool
-    fun object_replace_key = ucl_object_replace_key(top : UclObject*, elt : UclObject*, key : LibC::Char*, keylen : Int64, copy_key : Bool) : Bool
+    fun object_replace_key = ucl_object_replace_key(top : UclObject*, elt : UclObject*, key : LibC::Char*, keylen : LibC::SizeT, copy_key : Bool) : Bool
 
     fun object_typed_new = ucl_object_typed_new(ucl_type_t : Int64) : UclObject*
     fun object_from_int = ucl_object_fromint(iv : Int64) : UclObject*
