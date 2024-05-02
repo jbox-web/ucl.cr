@@ -48,6 +48,7 @@ describe UCL::Encoder do
       it "should encode UCL conf" do
         output_ucl_conf = File.read("spec/fixtures/output_ucl.conf")
         UCL::Encoder.encode(INPUT_OBJECT).should eq(output_ucl_conf)
+        UCL::Encoder.encode(INPUT_OBJECT, "config").should eq(output_ucl_conf)
       end
     end
 
@@ -69,6 +70,13 @@ describe UCL::Encoder do
       it "should encode UCL conf" do
         output_ucl_conf = File.read("spec/fixtures/output_ucl.json.min")
         UCL::Encoder.encode(INPUT_OBJECT, "json_compact").should eq(output_ucl_conf.chomp)
+      end
+    end
+
+    context "when emit_type is msgpack" do
+      it "should encode UCL conf" do
+        output_ucl_conf = File.read("spec/fixtures/output_ucl.msgpack")
+        UCL::Encoder.encode(INPUT_OBJECT, "msgpack").should eq(output_ucl_conf.chomp)
       end
     end
 
