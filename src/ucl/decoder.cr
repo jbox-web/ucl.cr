@@ -26,14 +26,14 @@ module UCL
       case object.value.type
       when UCL::LibUCL::Types::UCL_OBJECT.value
         hash = Value.new
-        iter_ucl_object(object) do |child|
+        iterate_ucl_object(object) do |child|
           key = String.new UCL::LibUCL.object_key(child)
           hash[key] = from_ucl_object(child)
         end
         hash.to_h
       when UCL::LibUCL::Types::UCL_ARRAY.value
         array = [] of UCL::Value::Type
-        iter_ucl_object(object) do |child|
+        iterate_ucl_object(object) do |child|
           array << from_ucl_object(child)
         end
         array
@@ -52,7 +52,7 @@ module UCL
       end
     end
 
-    private def self.iter_ucl_object(object, &)
+    private def self.iterate_ucl_object(object, &)
       iterator = UCL::LibUCL.object_iterate_new(object)
       loop do
         ptr = UCL::LibUCL.object_iterate_safe(iterator, true)
