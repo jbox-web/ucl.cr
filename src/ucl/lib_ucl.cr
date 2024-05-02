@@ -78,7 +78,7 @@ module UCL
 
     fun object_key = ucl_object_key(object : UclObject*) : LibC::Char*
     fun object_to_int = ucl_object_toint(object : UclObject*) : Int64
-    fun object_to_double = ucl_object_todouble(object : UclObject*) : Float64
+    fun object_to_double = ucl_object_todouble(object : UclObject*) : LibC::Double
     fun object_to_string = ucl_object_tostring(object : UclObject*) : LibC::Char*
     fun object_to_boolean = ucl_object_toboolean(object : UclObject*) : Bool
 
@@ -93,7 +93,7 @@ module UCL
     fun object_typed_new = ucl_object_typed_new(ucl_type_t : Int64) : UclObject*
     fun object_from_int = ucl_object_fromint(iv : Int64) : UclObject*
     fun object_from_bool = ucl_object_frombool(bv : Bool) : UclObject*
-    fun object_from_double = ucl_object_fromdouble(dv : Float64) : UclObject*
+    fun object_from_double = ucl_object_fromdouble(dv : LibC::Double) : UclObject*
     fun object_from_string = ucl_object_fromstring(str : LibC::Char*) : UclObject*
   end
 end
