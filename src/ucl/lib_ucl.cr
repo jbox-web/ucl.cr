@@ -92,7 +92,7 @@ module UCL
     fun array_append = ucl_array_append(UclObject*, UclObject*) : Bool
     fun object_replace_key = ucl_object_replace_key(top : UclObject*, elt : UclObject*, key : LibC::Char*, keylen : LibC::SizeT, copy_key : Bool) : Bool
 
-    fun object_typed_new = ucl_object_typed_new(type : Int64) : UclObject*
+    fun object_typed_new = ucl_object_typed_new(type : Types) : UclObject*
     fun object_from_int = ucl_object_fromint(iv : LibC::LongLong) : UclObject*
     fun object_from_bool = ucl_object_frombool(bv : Bool) : UclObject*
     fun object_from_double = ucl_object_fromdouble(dv : LibC::Double) : UclObject*
