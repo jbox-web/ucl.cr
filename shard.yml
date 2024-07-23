@@ -2,7 +2,7 @@ name: ucl
 
 version: 0.1.0
 
-crystal: 1.12.1
+crystal: 1.13.1
 
 license: MIT
 
