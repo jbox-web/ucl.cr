@@ -10,10 +10,10 @@ jobs:
     runs-on: ubuntu-latest
 
     container:
-      image: crystallang/crystal:1.15.1
+      image: crystallang/crystal:1.17.1
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
         with:
           submodules: recursive
 
