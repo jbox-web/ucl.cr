@@ -5,10 +5,23 @@ SHELL := /usr/bin/env bash
 # Use sudo if current user is not root
 UID := $(shell id -u)
 
+SOURCE_FILE = src/ucl.cr
+OUTPUT_FILE = bin/ucl
+
+SPEC_OPTS            =
+COMPILE_OPTS_DEV     = --threads 4
+COMPILE_OPTS_RELEASE = --threads 4 --release --error-trace
+
 ifneq ($(UID), 0)
 	sudo = sudo
 else
 	sudo =
+endif
+
+ifeq ($(shell tty -s && echo true),true)
+  SPEC_OPTS += --verbose
+  COMPILE_OPTS_DEV += --progress
+  COMPILE_OPTS_RELEASE += --progress
 endif
 
 ifeq ($(shell uname -s),Darwin)
@@ -21,12 +34,14 @@ else
 	LIB_RELOAD = $(sudo) ldconfig
 endif
 
-################
-# Public tasks #
-################
-
 # This is the default task
 all: help
+
+.PHONY: all
+
+#####################
+# Development tasks #
+#####################
 
 setup: ## Setup local environment
 	asdf plugin add crystal || true
@@ -34,21 +49,31 @@ setup: ## Setup local environment
 	asdf current
 
 ucl: ## Compile to development binary
-	crystal build --threads 4 -o bin/ucl src/ucl.cr
+	crystal build $(COMPILE_OPTS_DEV) -o $(OUTPUT_FILE) $(SOURCE_FILE)
 
 ucl-release: ## Compile to production binary
-	crystal build --threads 4 --release -o bin/ucl src/ucl.cr
+	crystal build $(COMPILE_OPTS_RELEASE) -o $(OUTPUT_FILE) $(SOURCE_FILE)
 
 deps: ## Install dependencies
 	shards install
 
-spec: ## Run Crystal spec
-	export LD_LIBRARY_PATH=/usr/local/lib && crystal spec
-
 clean: ## Cleanup environment
 	rm -rf bin/*
 	rm -rf lib/
-	$(MAKE) deps
+
+spec: ## Run Crystal spec
+	export LD_LIBRARY_PATH=/usr/local/lib && crystal spec $(SPEC_OPTS)
+
+doc: ## Generate ucl.cr documentation
+	rm -rf docs
+	crystal doc
+	open docs/index.html
+
+ameba: ## Run static code analysis
+	bin/ameba
+
+format: ## Format code
+	crystal tool format src/
 
 libucl: libucl-build libucl-install  ## Build and install vendored libucl lib
 
@@ -64,15 +89,7 @@ libucl-install: ## Install vendored libucl lib
 	$(sudo) ln -nfs /usr/local/lib/$(LIB_NAME_VERSION) /usr/local/lib/$(LIB_NAME) && \
 	$(LIB_RELOAD)
 
-ameba: ## Run static code analysis
-	bin/ameba
-
-doc: ## Generate ucl.cr documentation
-	rm -rf docs
-	crystal doc
-	open docs/index.html
-
-.PHONY: all setup ucl ucl-release deps spec clean libucl libucl-build libucl-install ameba doc
+.PHONY: setup ucl ucl-release deps clean spec doc ameba format libucl libucl-build libucl-install
 
 #################
 # Private tasks #
