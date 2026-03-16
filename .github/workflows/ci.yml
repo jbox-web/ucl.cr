@@ -1,27 +1,45 @@
 ---
 name: CI
 
+permissions: {}
+
 on:
-  - push
-  - pull_request
+  push:
+    branches:
+      - '**'
+    paths-ignore:
+      - "**.md"
+  pull_request:
+    branches:
+      - '**'
+    paths-ignore:
+      - "**.md"
+  schedule:
+    - cron: '0 4 1 * *'
+  # Run workflow manually
+  workflow_dispatch:
 
 jobs:
   build:
     runs-on: ubuntu-latest
 
-    container:
-      image: crystallang/crystal:1.18.0
-
     steps:
-      - uses: actions/checkout@v5
+      - name: Install dev packages
+        run: sudo apt-get update && sudo apt-get install -y build-essential automake autoconf libtool
+
+      - name: Git checkout
+        uses: actions/checkout@v6
         with:
+          persist-credentials: false
           submodules: recursive
 
-      - name: Install dev packages
-        run: apt-get update && apt-get install -y build-essential automake autoconf libtool
+      - name: Setup mise
+        uses: jdx/mise-action@v3
 
       - name: Build vendored libucl
-        run: make libucl
+        run: |
+          mise libucl:build
+          mise libucl:install
 
       - name: Run tests
-        run: make spec
+        run: mise dev:spec

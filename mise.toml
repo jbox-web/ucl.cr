@@ -1,0 +1,99 @@
+[tools]
+crystal = "1.18.2"
+
+[vars]
+APP_NAME    = "ucl"
+SOURCE_FILE = "src/{{vars.APP_NAME}}.cr"
+OUTPUT_FILE = "{% if get_env(name='OUTPUT_FILE', default='false') == 'false' %}bin/{{vars.APP_NAME}}{% else %}{{ get_env(name='OUTPUT_FILE') }}{% endif %}"
+
+SUDO = "{% if exec(command='id -u') != '0' %}sudo{% endif %}"
+
+DEFAULT_COMPILE_OPTS_DEV     = "--threads 4"
+DEFAULT_COMPILE_OPTS_RELEASE = "--threads 4 --release --error-trace"
+
+SPEC_OPTS            = "{% if exec(command='(tty -s && echo true) || echo false') == 'true' %}--verbose{% endif %}"
+COMPILE_OPTS_DEV     = "{% if exec(command='(tty -s && echo true) || echo false') == 'true' %}{{vars.DEFAULT_COMPILE_OPTS_DEV}} --progress{% else %}{{vars.DEFAULT_COMPILE_OPTS_DEV}}{% endif %}"
+COMPILE_OPTS_RELEASE = "{% if exec(command='(tty -s && echo true) || echo false') == 'true' %}{{vars.DEFAULT_COMPILE_OPTS_RELEASE}} --progress{% else %}{{vars.DEFAULT_COMPILE_OPTS_RELEASE}}{% endif %}"
+
+LIB_NAME         = "{% if os() == 'macos' %}libucl.dylib{% else %}libucl.so{% endif %}"
+LIB_NAME_VERSION = "{% if os() == 'macos' %}libucl.7.dylib{% else %}libucl.so.7{% endif %}"
+LIB_RELOAD       = "{% if os() == 'macos' %}true{% else %}ldconfig{% endif %}"
+
+
+#####################
+# Development tasks #
+#####################
+
+[tasks."dev:build"]
+description = "Compile to development binary"
+run = "crystal build {{vars.COMPILE_OPTS_DEV}} -o {{vars.OUTPUT_FILE}} {{vars.SOURCE_FILE}}"
+
+[tasks."dev:deps"]
+description = "Install development dependencies"
+run = "shards install"
+
+[tasks."dev:clean"]
+description = "Cleanup environment"
+run = "rm -rf bin/* lib/"
+
+[tasks."dev:spec"]
+description = "Run Crystal spec"
+run = "export LD_LIBRARY_PATH=/usr/local/lib && crystal spec {{vars.SPEC_OPTS}}"
+
+[tasks."dev:doc"]
+description = "Generate project documentation"
+run = "rm -rf docs && crystal doc"
+
+[tasks."dev:ameba"]
+description = "Run static code analysis"
+run = "bin/ameba"
+
+[tasks."dev:format"]
+description = "Format code"
+run = "crystal tool format src/"
+
+# TODO: remove me when https://github.com/crystal-lang/crystal/issues/16746 is fixed
+[tasks."dev:fix-shards-command"]
+description = "Fix missing shards command"
+run = "cp $HOME/.local/share/mise/installs/crystal/{{tools.crystal.version}}/embedded/bin/shards $HOME/.local/share/mise/installs/crystal/{{tools.crystal.version}}/bin/"
+
+
+#################
+# Release tasks #
+#################
+
+[tasks."release:build"]
+description = "Compile to production binary"
+run = '''
+crystal build {{vars.COMPILE_OPTS_RELEASE}} -o {{vars.OUTPUT_FILE}} {{vars.SOURCE_FILE}}
+cd bin; for f in *; do shasum --algorithm 256 $f > $f.sha256; done
+'''
+
+[tasks."release:deps"]
+description = "Install production dependencies"
+run = "shards install --production"
+
+
+################
+# libucl tasks #
+################
+
+[tasks."libucl:build"]
+description = "Build vendored libucl lib"
+run = '''
+#!/usr/bin/env bash
+
+pushd ext/libucl
+./autogen.sh
+./configure
+make
+popd
+'''
+
+[tasks."libucl:install"]
+description = "Install vendored libucl lib"
+run = '''
+{{vars.SUDO}} cp -v ext/libucl/src/.libs/{{vars.LIB_NAME_VERSION}} /usr/local/lib/
+{{vars.SUDO}} ln -v -nfs /usr/local/lib/{{vars.LIB_NAME_VERSION}} /usr/local/lib/{{vars.LIB_NAME}}
+{{vars.SUDO}} {{vars.LIB_RELOAD}}
+'''
