@@ -19,12 +19,36 @@ on:
   # Run workflow manually
   workflow_dispatch:
 
-jobs:
-  build:
-    runs-on: ubuntu-latest
+# Cancel superseded runs on the same ref (but never on the default branch).
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.ref != 'refs/heads/master' }}
 
+jobs:
+  lint:
+    runs-on: ubuntu-latest
     steps:
-      - name: Install dev packages
+      - name: Git checkout
+        uses: actions/checkout@v6
+        with:
+          persist-credentials: false
+
+      - name: Setup mise
+        uses: jdx/mise-action@v4
+
+      - name: Install dependencies
+        run: mise dev:deps
+
+      - name: Check formatting
+        run: mise dev:format-check
+
+      - name: Run static code analysis
+        run: mise dev:ameba
+
+  test_linux:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Install build dependencies
         run: sudo apt-get update && sudo apt-get install -y build-essential automake autoconf libtool
 
       - name: Git checkout
@@ -34,12 +58,75 @@ jobs:
           submodules: recursive
 
       - name: Setup mise
-        uses: jdx/mise-action@v3
+        uses: jdx/mise-action@v4
 
-      - name: Build vendored libucl
+      - name: Build and install vendored libucl
         run: |
           mise libucl:build
           mise libucl:install
+
+      - name: Install dependencies
+        run: mise dev:deps
+
+      - name: Run tests
+        run: mise dev:spec
+
+  test_macos_arm64:
+    runs-on: macos-26
+    steps:
+      - name: Install build dependencies
+        run: brew install autoconf automake libtool
+
+      - name: Git checkout
+        uses: actions/checkout@v6
+        with:
+          persist-credentials: false
+          submodules: recursive
+
+      - name: Setup mise
+        uses: jdx/mise-action@v4
+
+      # TODO: remove me when https://github.com/crystal-lang/crystal/issues/16746 is fixed
+      - name: Fix Crystal shards
+        run: mise dev:fix-shards-command
+
+      - name: Build and install vendored libucl
+        run: |
+          mise libucl:build
+          mise libucl:install
+
+      - name: Install dependencies
+        run: mise dev:deps
+
+      - name: Run tests
+        run: mise dev:spec
+
+  test_macos_amd64:
+    runs-on: macos-26-intel
+    steps:
+      - name: Install build dependencies
+        run: brew install autoconf automake libtool
+
+      - name: Git checkout
+        uses: actions/checkout@v6
+        with:
+          persist-credentials: false
+          submodules: recursive
+
+      - name: Setup mise
+        uses: jdx/mise-action@v4
+
+      # TODO: remove me when https://github.com/crystal-lang/crystal/issues/16746 is fixed
+      - name: Fix Crystal shards
+        run: mise dev:fix-shards-command
+
+      - name: Build and install vendored libucl
+        run: |
+          mise libucl:build
+          mise libucl:install
+
+      - name: Install dependencies
+        run: mise dev:deps
 
       - name: Run tests
         run: mise dev:spec

@@ -115,7 +115,7 @@ describe UCL do
         UCL.validate(schema, data)
       end
 
-      msg = ex.message.not_nil!
+      msg = ex.message.to_s
       msg.should eq("Invalid type of null, expected string")
       msg.valid_encoding?.should be_true
     end
