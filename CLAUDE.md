@@ -40,7 +40,7 @@ Note: on some Crystal installs the `shards` binary is missing from mise's bin di
 
 ## Architecture
 
-Everything lives under the `UCL` module. `src/ucl.cr` exposes the public API — `UCL.load`, `UCL.load_file`, `UCL.dump`, `UCL.validate`, `UCL.valid?` — as thin wrappers that delegate to four single-responsibility classes. Data flows in one direction through each:
+Everything lives under the `UCL` module. `src/ucl.cr` exposes the public API — `UCL.load`, `UCL.load_any`, `UCL.load_file`, `UCL.dump`, `UCL.validate`, `UCL.valid?` — as thin wrappers that delegate to four single-responsibility classes. Data flows in one direction through each:
 
 - **`LibUCL`** (`lib_ucl.cr`) — the raw C bindings: `Types`/`Emitters`/`ParserFlags`/`SchemaErrorCode` enums, the `UclObject` struct, and `fun` declarations. This is the only file that talks to C; everything else goes through it.
 - **`Parser`** (`parser.cr`) — wraps a `ucl_parser_*` handle. `parse`/`parse_file` add the input, check `get_error` (raising `DecoderError`), return the raw owned `UclObject*`, and free the parser in `ensure`. `DEFAULT_FLAGS` = `NO_TIME | NO_IMPLICIT_ARRAYS`. Internal API (exposes raw C pointers) — not semver-covered.
@@ -49,6 +49,8 @@ Everything lives under the `UCL` module. `src/ucl.cr` exposes the public API —
 - **`Validator`** (`validator.cr`) — parses schema and data (honouring `flags`), calls `object_validate`, and on failure raises `SchemaError` carrying the reconstructed message (`String.new(msg.to_unsafe)`) and the libucl `code`. Unrefs both trees.
 
 **`Value`** (`value.cr`) is a `struct` wrapping `Hash(String, Type)` (so copies share the same hash). `Type` is the recursive union `UCL.load` returns; `Value` itself is **not** in the union (objects decode to plain `Hash`).
+
+**`Any`** (`any.cr`) is a `JSON::Any`-style typed view over a `Type`, returned by `UCL.load_any`. It adds `#[]`/`#[]?` navigation and `as_s`/`as_i`/`as_f`/`as_bool` (+ nilable variants), `as_a`, `as_h` so callers avoid manual casts.
 
 **`Error`** (`error.cr`) defines the exception hierarchy, all under `UCL::Error::BaseError`.
 

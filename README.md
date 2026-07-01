@@ -77,6 +77,15 @@ UCL.load("s { a = 1 }\ns { b = 2 }")
 # => {"s" => [{"a" => 1}, {"b" => 2}]}
 ```
 
+For typed, cast-free access, use `load_any` — a `JSON::Any`-style wrapper:
+
+```crystal
+cfg = UCL.load_any(%(server { port = 8080, hosts = ["a", "b"] }))
+cfg["server"]["port"].as_i        # => 8080
+cfg["server"]["hosts"].as_a.map(&.as_s) # => ["a", "b"]
+cfg["server"]["missing"]?         # => nil
+```
+
 ### Dump
 
 Serialize a Crystal object. The default emitter is `config` (UCL). Pick a format
