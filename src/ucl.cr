@@ -41,6 +41,12 @@ module UCL
     Decoder.decode(string, flags)
   end
 
+  # Like `.load`, but wraps the result in a `UCL::Any` for typed, cast-free
+  # navigation (`cfg["server"]["port"].as_i`).
+  def self.load_any(string : String, flags = UCL::Parser::DEFAULT_FLAGS) : UCL::Any
+    UCL::Any.new(load(string, flags))
+  end
+
   # Loads and parses the UCL/JSON file at *path* into native Crystal values.
   #
   # Unlike `.load(File.read(path))`, libucl resolves file variables and relative
