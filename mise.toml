@@ -97,6 +97,7 @@ popd
 [tasks."libucl:install"]
 description = "Install vendored libucl lib"
 run = '''
+{{vars.SUDO}} mkdir -p /usr/local/lib
 {{vars.SUDO}} cp -v ext/libucl/src/.libs/{{vars.LIB_NAME_VERSION}} /usr/local/lib/
 {{vars.SUDO}} ln -v -nfs /usr/local/lib/{{vars.LIB_NAME_VERSION}} /usr/local/lib/{{vars.LIB_NAME}}
 {{vars.SUDO}} {{vars.LIB_RELOAD}}
