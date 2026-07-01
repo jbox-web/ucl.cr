@@ -75,8 +75,10 @@ describe UCL::Encoder do
 
     context "when emit_type is msgpack" do
       it "should encode UCL conf" do
+        # msgpack is binary and can contain embedded NUL / newline bytes, so
+        # compare the raw bytes without chomping.
         output_ucl_conf = File.read("spec/fixtures/output_ucl.msgpack")
-        UCL::Encoder.encode(INPUT_OBJECT, "msgpack").should eq(output_ucl_conf.chomp)
+        UCL::Encoder.encode(INPUT_OBJECT, "msgpack").should eq(output_ucl_conf)
       end
     end
 
