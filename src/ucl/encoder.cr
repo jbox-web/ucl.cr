@@ -32,7 +32,6 @@ module UCL
       "config"       => UCL::LibUCL::Emitters::UCL_EMIT_CONFIG,
       "yaml"         => UCL::LibUCL::Emitters::UCL_EMIT_YAML,
       "msgpack"      => UCL::LibUCL::Emitters::UCL_EMIT_MSGPACK,
-      "max"          => UCL::LibUCL::Emitters::UCL_EMIT_MAX,
     }
 
     # Emitter used when none is given: `"config"` (UCL output).
