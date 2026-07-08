@@ -25,6 +25,11 @@ module UCL
     delegate to_yaml, to: @container
     delegate to_h, to: @container
 
+    # Serializes the underlying hash to UCL/JSON/YAML/MsgPack. See `UCL.dump`.
+    def to_ucl(emit_type : String | UCL::Emitter = UCL::Encoder::DEFAULT_EMITTER) : String
+      UCL.dump(@container, emit_type)
+    end
+
     # Returns the value for *key*, raising `KeyError` if it is missing.
     def [](key : String)
       @container[key]

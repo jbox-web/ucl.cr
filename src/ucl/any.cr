@@ -63,5 +63,10 @@ module UCL
     def as_h : Hash(String, Any)
       raw.as(Hash(String, UCL::Value::Type)).transform_values { |v| Any.new(v) }
     end
+
+    # Serializes the wrapped value to UCL/JSON/YAML/MsgPack. See `UCL.dump`.
+    def to_ucl(emit_type : String | UCL::Emitter = UCL::Encoder::DEFAULT_EMITTER) : String
+      UCL.dump(raw, emit_type)
+    end
   end
 end

@@ -106,6 +106,15 @@ Hash keys must be strings; supported value types are `String`, `Bool`, `Int`,
 `Float`, `Time::Span`, `Nil`, `Array` and `Hash`. Anything else raises
 `UCL::Error::TypeError`.
 
+Each of those types also carries a `#to_ucl` instance method mirroring Crystal's
+`#to_json` / `#to_yaml`, so you can dump inline. `UCL::Value` and `UCL::Any`
+expose it too:
+
+```crystal
+{"foo" => "bar"}.to_ucl                    # => "foo = \"bar\";\n"
+{"foo" => "bar"}.to_ucl(UCL::Emitter::Json) # => "{\n    \"foo\": \"bar\"\n}"
+```
+
 ### Validate
 
 Check data against a UCL/JSON schema. `validate` raises
