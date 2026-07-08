@@ -103,8 +103,14 @@ UCL.dump({"foo" => "bar"}, "json") # legacy string form still works
 ```
 
 Hash keys must be strings; supported value types are `String`, `Bool`, `Int`,
-`Float`, `Time::Span`, `Nil`, `Array` and `Hash`. Anything else raises
-`UCL::Error::TypeError`.
+`Float`, `Time::Span`, `Nil`, `Array`, `Hash` and `NamedTuple`. Anything else
+raises `UCL::Error::TypeError`. A `NamedTuple` encodes like the equivalent
+`Hash`, with its `Symbol` keys stringified:
+
+```crystal
+{port: 8080, host: "localhost"}.to_ucl
+# => "port = 8080;\nhost = \"localhost\";\n"
+```
 
 Each of those types also carries a `#to_ucl` instance method mirroring Crystal's
 `#to_json` / `#to_yaml`, so you can dump inline. `UCL::Value` and `UCL::Any`

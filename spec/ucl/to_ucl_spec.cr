@@ -31,6 +31,14 @@ describe "#to_ucl" do
     10.seconds.to_ucl.should eq(UCL.dump(10.seconds))
   end
 
+  context "NamedTuple" do
+    it "encodes via to_ucl, default and typed emitter" do
+      {port: 8080, host: "localhost"}.to_ucl
+        .should eq(UCL.dump({"port" => 8080, "host" => "localhost"}))
+      {port: 8080}.to_ucl(UCL::Emitter::Json).should eq(UCL.dump({"port" => 8080}, UCL::Emitter::Json))
+    end
+  end
+
   context "UCL::Value" do
     it "encodes via to_ucl" do
       v = UCL::Value.new

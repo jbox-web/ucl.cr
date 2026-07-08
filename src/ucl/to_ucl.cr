@@ -28,6 +28,14 @@ class Hash(K, V)
   end
 end
 
+struct NamedTuple
+  # Serializes `self` to UCL/JSON/YAML/MsgPack, stringifying the `Symbol` keys.
+  # See `UCL.dump`.
+  def to_ucl(emit_type : String | UCL::Emitter = UCL::Encoder::DEFAULT_EMITTER) : String
+    UCL.dump(self, emit_type)
+  end
+end
+
 class Array
   # Serializes `self` to UCL/JSON/YAML/MsgPack. See `UCL.dump`.
   def to_ucl(emit_type : String | UCL::Emitter = UCL::Encoder::DEFAULT_EMITTER) : String

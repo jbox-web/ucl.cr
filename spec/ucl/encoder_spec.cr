@@ -111,5 +111,39 @@ describe UCL::Encoder do
         end
       end
     end
+
+    context "when object is a NamedTuple" do
+      it "encodes it like the equivalent Hash (Symbol keys become strings)" do
+        UCL::Encoder.encode({port: 8080, host: "localhost"})
+          .should eq(UCL::Encoder.encode({"port" => 8080, "host" => "localhost"}))
+      end
+
+      it "encodes a nested NamedTuple" do
+        nt = {server: {port: 8080, host: "localhost"}}
+        h = {"server" => {"port" => 8080, "host" => "localhost"}}
+        UCL::Encoder.encode(nt).should eq(UCL::Encoder.encode(h))
+      end
+
+      it "encodes NamedTuples inside an Array" do
+        UCL::Encoder.encode([{a: 1}, {a: 2}])
+          .should eq(UCL::Encoder.encode([{"a" => 1}, {"a" => 2}]))
+      end
+
+      it "encodes a NamedTuple containing a Hash and an Array" do
+        nt = {list: [1, 2], map: {"k" => "v"}}
+        h = {"list" => [1, 2], "map" => {"k" => "v"}}
+        UCL::Encoder.encode(nt).should eq(UCL::Encoder.encode(h))
+      end
+
+      it "encodes a Hash whose value is a NamedTuple" do
+        UCL::Encoder.encode({"server" => {port: 8080}})
+          .should eq(UCL::Encoder.encode({"server" => {"port" => 8080}}))
+      end
+
+      it "honours a typed emitter" do
+        UCL::Encoder.encode({port: 8080}, UCL::Emitter::Json)
+          .should eq(UCL::Encoder.encode({"port" => 8080}, UCL::Emitter::Json))
+      end
+    end
   end
 end

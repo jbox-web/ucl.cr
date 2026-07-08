@@ -81,25 +81,19 @@ module UCL
 
     # Recursively converts a Crystal *object* into a libucl `UclObject*`.
     #
-    # Hashes become UCL objects (keys must be `String`), arrays become UCL
-    # arrays, and scalars map to the matching `ucl_object_from*` constructor.
-    # `Time::Span` is stored as its whole number of seconds; `Nil` becomes a
-    # typed null.
+    # Hashes and named tuples become UCL objects (hash keys must be `String`;
+    # named-tuple `Symbol` keys are stringified), arrays become UCL arrays, and
+    # scalars map to the matching `ucl_object_from*` constructor. `Time::Span` is
+    # stored as its whole number of seconds; `Nil` becomes a typed null.
     #
     # Raises `UCL::Error::TypeError` for a non-`String` key or an unsupported
     # value type.
     private def self.to_ucl_object(object)
       case object
       when Hash
-        hash = UCL::LibUCL.object_typed_new(UCL::LibUCL::Types::UCL_OBJECT)
-        object.each do |key, value|
-          if key.is_a?(String)
-            UCL::LibUCL.object_replace_key(hash, to_ucl_object(value), key, 0, true)
-          else
-            raise UCL::Error::TypeError.new("UCL only supports string keys: #{key}")
-          end
-        end
-        hash
+        hash_to_ucl_object(object)
+      when NamedTuple
+        named_tuple_to_ucl_object(object)
       when Array
         array = UCL::LibUCL.object_typed_new(UCL::LibUCL::Types::UCL_ARRAY)
         object.each do |item|
@@ -121,6 +115,33 @@ module UCL
       else
         raise UCL::Error::TypeError.new("#{object.class.name}##{object.inspect} is not UCL serializable")
       end
+    end
+
+    # Builds a `UCL_OBJECT` from a `Hash`. Keys are only known at runtime, so
+    # each is validated as a `String`; a non-`String` key raises. The check
+    # gates the `object_replace_key` call, so for a statically non-`String` key
+    # type the insertion is pruned and never allocates an orphaned value.
+    private def self.hash_to_ucl_object(hash)
+      map = UCL::LibUCL.object_typed_new(UCL::LibUCL::Types::UCL_OBJECT)
+      hash.each do |key, value|
+        if key.is_a?(String)
+          UCL::LibUCL.object_replace_key(map, to_ucl_object(value), key, 0, true)
+        else
+          raise UCL::Error::TypeError.new("UCL only supports string keys: #{key}")
+        end
+      end
+      map
+    end
+
+    # Builds a `UCL_OBJECT` from a `NamedTuple`. Its keys are always `Symbol`,
+    # resolved at compile time, so no runtime key-type check is needed — they are
+    # simply stringified.
+    private def self.named_tuple_to_ucl_object(tuple)
+      map = UCL::LibUCL.object_typed_new(UCL::LibUCL::Types::UCL_OBJECT)
+      tuple.each do |key, value|
+        UCL::LibUCL.object_replace_key(map, to_ucl_object(value), key.to_s, 0, true)
+      end
+      map
     end
   end
 end

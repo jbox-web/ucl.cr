@@ -52,7 +52,7 @@ Everything lives under the `UCL` module. `src/ucl.cr` exposes the public API —
 
 **`Any`** (`any.cr`) is a `JSON::Any`-style typed view over a `Type`, returned by `UCL.load_any`. It adds `#[]`/`#[]?` navigation and `as_s`/`as_i`/`as_f`/`as_bool` (+ nilable variants), `as_a`, `as_h` so callers avoid manual casts.
 
-**`to_ucl`** (`to_ucl.cr`) reopens every type the `Encoder` handles (`Hash`, `Array`, `String`, `Bool`, `Int`, `Float`, `Nil`, `Time::Span`) plus `Value`/`Any` with a `#to_ucl(emit_type = …)` instance method mirroring `#to_json`/`#to_yaml`; each just delegates to `UCL.dump`. `Time` is intentionally absent, since the `Encoder` only serializes `Time::Span`.
+**`to_ucl`** (`to_ucl.cr`) reopens every type the `Encoder` handles (`Hash`, `NamedTuple`, `Array`, `String`, `Bool`, `Int`, `Float`, `Nil`, `Time::Span`) plus `Value`/`Any` with a `#to_ucl(emit_type = …)` instance method mirroring `#to_json`/`#to_yaml`; each just delegates to `UCL.dump`. `Hash#to_ucl` also reopens `Hash(K, V)` to macro-`raise` unless `K <= String`, making a non-`String` key a compile error (values are still only checked at runtime). `Time` is intentionally absent, since the `Encoder` only serializes `Time::Span`.
 
 **`Error`** (`error.cr`) defines the exception hierarchy, all under `UCL::Error::BaseError`.
 
