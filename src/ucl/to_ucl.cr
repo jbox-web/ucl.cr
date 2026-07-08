@@ -10,10 +10,20 @@
 # Only the types handled by `UCL::Encoder#to_ucl_object` are reopened, so the
 # method exists exactly where a serialization can succeed. `emit_type` accepts
 # the same `String | UCL::Emitter` values as `UCL.dump`.
+#
+# `Hash#to_ucl` additionally guards its key type at compile time: a non-`String`
+# key (`Hash(Int32, _)`) is a compile error rather than a runtime `TypeError`.
+# Values are *not* checked, since the value type is often a broad union — a
+# nested unsupported value still raises `UCL::Error::TypeError` at runtime.
 
-class Hash
+class Hash(K, V)
   # Serializes `self` to UCL/JSON/YAML/MsgPack. See `UCL.dump`.
+  #
+  # The key type `K` is checked at compile time (UCL objects require `String`
+  # keys). Values are not checked recursively: a nested unsupported value still
+  # raises `UCL::Error::TypeError` at runtime.
   def to_ucl(emit_type : String | UCL::Emitter = UCL::Encoder::DEFAULT_EMITTER) : String
+    {% raise "UCL only supports String hash keys, got Hash(#{K}, #{V})" unless K <= String %}
     UCL.dump(self, emit_type)
   end
 end

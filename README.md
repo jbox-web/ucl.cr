@@ -115,6 +115,11 @@ expose it too:
 {"foo" => "bar"}.to_ucl(UCL::Emitter::Json) # => "{\n    \"foo\": \"bar\"\n}"
 ```
 
+`Hash#to_ucl` checks its key type at compile time: a non-`String` key (e.g.
+`Hash(Int32, String)`) is a compile error, not a runtime `TypeError`. Values are
+not checked recursively — a nested unsupported value still raises
+`UCL::Error::TypeError` at runtime.
+
 ### Validate
 
 Check data against a UCL/JSON schema. `validate` raises
