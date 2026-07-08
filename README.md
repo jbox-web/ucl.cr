@@ -108,7 +108,7 @@ raises `UCL::Error::TypeError`. A `NamedTuple` encodes like the equivalent
 `Hash`, with its `Symbol` keys stringified:
 
 ```crystal
-{port: 8080, host: "localhost"}.to_ucl
+UCL.dump({port: 8080, host: "localhost"})
 # => "port = 8080;\nhost = \"localhost\";\n"
 ```
 
