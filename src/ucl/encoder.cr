@@ -95,11 +95,7 @@ module UCL
       when NamedTuple
         named_tuple_to_ucl_object(object)
       when Array
-        array = UCL::LibUCL.object_typed_new(UCL::LibUCL::Types::UCL_ARRAY)
-        object.each do |item|
-          UCL::LibUCL.array_append(array, to_ucl_object(item))
-        end
-        array
+        array_to_ucl_object(object)
       when String
         UCL::LibUCL.object_from_string(object)
       when Bool
@@ -121,6 +117,10 @@ module UCL
     # each is validated as a `String`; a non-`String` key raises. The check
     # gates the `object_replace_key` call, so for a statically non-`String` key
     # type the insertion is pruned and never allocates an orphaned value.
+    #
+    # If a nested value (or a bad key) raises mid-build, the partial `map` is
+    # unref'd before re-raising: it is never returned, so nothing else would free
+    # it. Children already inserted are owned by `map` and freed with it.
     private def self.hash_to_ucl_object(hash)
       map = UCL::LibUCL.object_typed_new(UCL::LibUCL::Types::UCL_OBJECT)
       hash.each do |key, value|
@@ -131,17 +131,37 @@ module UCL
         end
       end
       map
+    rescue ex
+      UCL::LibUCL.object_unref(map) if map
+      raise ex
     end
 
     # Builds a `UCL_OBJECT` from a `NamedTuple`. Its keys are always `Symbol`,
     # resolved at compile time, so no runtime key-type check is needed — they are
-    # simply stringified.
+    # simply stringified. Frees the partial `map` on a mid-build error (see
+    # `hash_to_ucl_object`).
     private def self.named_tuple_to_ucl_object(tuple)
       map = UCL::LibUCL.object_typed_new(UCL::LibUCL::Types::UCL_OBJECT)
       tuple.each do |key, value|
         UCL::LibUCL.object_replace_key(map, to_ucl_object(value), key.to_s, 0, true)
       end
       map
+    rescue ex
+      UCL::LibUCL.object_unref(map) if map
+      raise ex
+    end
+
+    # Builds a `UCL_ARRAY` from an `Array`. Frees the partial `array` on a
+    # mid-build error (see `hash_to_ucl_object`).
+    private def self.array_to_ucl_object(array_value)
+      array = UCL::LibUCL.object_typed_new(UCL::LibUCL::Types::UCL_ARRAY)
+      array_value.each do |item|
+        UCL::LibUCL.array_append(array, to_ucl_object(item))
+      end
+      array
+    rescue ex
+      UCL::LibUCL.object_unref(array) if array
+      raise ex
     end
   end
 end
