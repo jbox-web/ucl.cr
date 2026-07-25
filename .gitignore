@@ -1,12 +1,18 @@
+# Ignore generated data
 /docs/
 /lib/
-/bin/
-/.shards/
-*.dwarf
+/packages/
+
+# Ignore all bin files
+/bin/*
+!/bin/.keep
+
+# Ignore MacOS files
+.DS_Store
+
+# Ignore spectator's failing-example cache
+/.spectator-failures
 
 # Libraries don't need dependency lock
 # Dependencies will be locked in applications that use them
 /shard.lock
-
-# Ignore MacOS files
-.DS_Store
