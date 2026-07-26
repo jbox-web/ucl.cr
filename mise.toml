@@ -20,7 +20,7 @@ COMPILE_OPTS_DEV     = "{% if exec(command='(tty -s && echo true) || echo false'
 COMPILE_OPTS_RELEASE = "{% if exec(command='(tty -s && echo true) || echo false') == 'true' %}{{vars.DEFAULT_COMPILE_OPTS_RELEASE}} --progress{% else %}{{vars.DEFAULT_COMPILE_OPTS_RELEASE}}{% endif %}"
 
 LIB_NAME         = "{% if os() == 'macos' %}libucl.dylib{% else %}libucl.so{% endif %}"
-LIB_NAME_VERSION = "{% if os() == 'macos' %}libucl.7.dylib{% else %}libucl.so.7{% endif %}"
+LIB_NAME_VERSION = "{% if os() == 'macos' %}libucl.5.dylib{% else %}libucl.so.5{% endif %}"
 LIB_RELOAD       = "{% if os() == 'macos' %}true{% else %}ldconfig{% endif %}"
 
 
